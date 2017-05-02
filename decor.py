@@ -6,27 +6,35 @@ def timetest(f):
         t = time.time()
         f(*args)
         t2 = time.time()
-        return "execution time: %d"%(t2-t)
+        return "execution time: %d seconds"%(t2-t)
     return inner
 
 #name of fxn + args
 def whoAmI(f):
     def inner(*args):
         ret = "%s(%s)"%(str(f.func_name),str(*args))
-        #this has to happen for the output to match Mr. Brown's
-        f(*args)
         print ret
-        return ret
+        return f(*args)
+    return inner
+
+def memoization(f):
+    def inner(n):
+        fibcache = {}
+        if n not in fibcache:
+            fibcache[n] = f(n)
+        return fibcache[n]
     return inner
 
 #fibonacci sequence but longer
+#max 333
+#up to 36 in under a minute
 @timetest
-@whoAmI
+@memoization
 def fib(n):
     if (n <= 1):
         return n
-    time.sleep(.5)
     return fib(n-1) + fib(n-2)
+
 
 #this is literally a function that wastes time
 @timetest
@@ -39,6 +47,7 @@ def timeWaster(n):
 print fib(1)
 print fib(5)
 print fib(10)
-print timeWaster(1)
-print timeWaster(5)
-print timeWaster(10)
+print fib(37)
+# print timeWaster(1)
+# print timeWaster(5)
+# print timeWaster(10)
